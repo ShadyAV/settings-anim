@@ -1,0 +1,214 @@
+/* e-Comet Design System — colors & type
+ * Drop into any prototype. Works with data-bs-theme="light|dark" on <html> or <body>.
+ * Font: Nunito (Google Fonts). See README for specimen details.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap');
+
+/* ===========================================================
+   BASE PALETTE (mirrors front/src/shared/styles/colors.scss)
+   =========================================================== */
+:root {
+    /* Brand / signature */
+    --e-comet-garnet: #f04527;         /* fiery brand red */
+    --e-comet-dark-blue: #347cce;
+    --secondary: #f0bc74;              /* warm yellow-orange — CTAs, logo glow */
+    --secondary-hover: #eeb15d;
+    --yellow-logo: #ffce54;            /* the comet's orb */
+    --red-logo: #e9573f;               /* the comet's tail */
+    --reddish-orange: #b56746;         /* dark-mode brand */
+    --reddish-orange-300: #ff9066;
+    --reddish-orange-29: #b5674629;
+
+    /* Primary / surface (light) */
+    --primary-dark-blue: #2c3046;      /* header + primary text */
+    --tertiary: #31316a;
+    --tertiary-blue: #082074;
+    --accent-blue: #2361ce;
+    --blue: #1e90ff;
+    --light-blue: #e4e8fd;
+    --secondary-blue: #a4c2f4;
+    --secondary-light-blue: #6d9eeb;
+    --logo-blue: #262b40;
+    --light-gray-blue: #f5f8fb;        /* body background */
+    --grayish-white: #efeff1;
+
+    /* Neutrals */
+    --dark: #111827;
+    --dark-gray: #374151;
+    --dark-gray-2: #18181b;
+    --dark-gray-3: #3a3a3f;
+    --dark-gray-4: rgba(44, 44, 48, 0.7);
+    --dark-purple-gray: #2d2c33;
+    --gray: #9a9a9a;
+    --gray-200: #dcdcde;
+    --border-gray: #c4c4c4;
+    --light-gray: #f2f4f6;
+    --tick-gray: #949494;
+    --cell-white: #bbbac0;
+    --white: #ffffff;
+    --very-dark-blue: #0e0e10;
+    --very-dark-gray: #1f1f23;
+    --very-dark-gray-800: #2c2c30;
+    --empty-white: #fceae71f;
+
+    /* Semantic */
+    --success: #10b981;
+    --warning: #fba918;
+    --danger: #e11d48;
+    --red-100: #ad0c00;
+    --dark-green: #204c28;
+    --dark-green-light: #d1e7dd;
+    --dark-green-light-2: #5bb557;
+
+    /* Tag colors */
+    --tag-success: #0fba81;
+    --tag-warning: #d59a06;
+    --tag-info: #6c757d;
+    --tag-notification: #6c757d;
+    --tag-danger: #e11d48;
+    --tag-message: #1e90ff;
+    --tag-purple: #9d4f9d;
+    --tag-orange: #ff7a00;
+    --tag-brown: #a0522d;
+    --tag-secondary: #f0bc74;
+
+    /* Rating 1..5 */
+    --rating-1: #ad0c00;
+    --rating-2: #ff3300;
+    --rating-3: #eca94b;
+    --rating-4: #5292e7;
+    --rating-5: #19c296;
+}
+
+/* ===========================================================
+   SEMANTIC THEME (light / dark) — mirrors theme.scss
+   =========================================================== */
+:root,
+[data-bs-theme='light'] {
+    --primary: var(--primary-dark-blue);
+    --background-main: var(--light-gray-blue);
+    --background-secondary: var(--white);
+    --background-secondary-2: var(--white);
+    --text-main: var(--primary-dark-blue);
+    --text-secondary: var(--primary-dark-blue);
+    --text-weak: #989696;
+    --border-color: var(--border-gray);
+    --border-300: var(--border-gray);
+    --header-background: var(--primary-dark-blue);
+    --hover-bg: #ffffff40;
+    --hover-bg-2: #e0e0e0;
+    --active-bg: #ffffff50;
+    --active-bg-2: #d9d8d8;
+    --active-bg-3: #d9d8d878;
+    --popup-shadow: 0 0 1rem rgba(46, 54, 80, 0.5);
+    --modal-shadow: 0 6px 16px rgba(0, 0, 0, 0.16), 0 0 4px rgba(0, 0, 0, 0.05);
+    --organic-color: #5bb557;
+    --link-underline: rgba(38, 43, 64, 0.3);
+}
+
+[data-bs-theme='dark'] {
+    --primary: var(--reddish-orange);
+    --background-main: var(--very-dark-blue);
+    --background-secondary: var(--very-dark-gray);
+    --background-secondary-2: var(--very-dark-gray-800);
+    --text-main: var(--grayish-white);
+    --text-secondary: var(--cell-white);
+    --text-weak: #787889;
+    --border-color: var(--dark-gray-3);
+    --border-300: var(--gray-200);
+    --header-background: var(--dark-gray-2);
+    --hover-bg: rgba(83, 83, 95, 0.48);
+    --hover-bg-2: rgba(83, 83, 95, 0.48);
+    --active-bg: rgba(83, 83, 95, 0.55);
+    --active-bg-2: rgba(83, 83, 95, 0.55);
+    --active-bg-3: rgba(83, 83, 95, 0.55);
+    --popup-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 4px rgba(0, 0, 0, 0.4);
+    --modal-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 0 4px rgba(0, 0, 0, 0.4);
+    --organic-color: #5bb557;
+    --link-underline: rgba(239, 239, 241, 0.3);
+}
+
+/* ===========================================================
+   TYPOGRAPHY
+   =========================================================== */
+:root {
+    --font-family-base: 'Nunito', Arial, Helvetica, sans-serif;
+    --font-family-alt: 'Roboto', Arial, Helvetica, sans-serif;
+
+    /* type scale (size / line-height / weight) */
+    --fs-details: 12px;       --lh-details: 16px;
+    --fs-main: 14px;          --lh-main: 18px;
+    --fs-accent: 16px;        --lh-accent: 24px;
+    --fs-block-heading: 20px; --lh-block-heading: 28px;
+
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-bold: 600;     /* buttons */
+    --fw-bolder: 700;   /* headings, emphasis */
+
+    /* radii, elevation, spacing */
+    --radius-sm: 0.5rem;      /* 8px — Bootstrap border-radius-sm is overridden to 8px */
+    --radius: 0.5rem;         /* 8px — the default */
+    --radius-lg: 0.75rem;     /* 12px — popover-rounded-12 */
+    --radius-pill: 9999px;
+    --card-border-radius: 0.5rem;
+
+    --header-height: 50px;
+
+    --brand-gradient: linear-gradient(90deg, #f04527 0%, #ff9066 50%, #f0bc74 100%);
+}
+
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--fs-main);
+    line-height: var(--lh-main);
+    font-weight: var(--fw-regular);
+    color: var(--text-main);
+    background-color: var(--background-main);
+}
+
+/* Global font utility classes (prefix `font-`) — from fonts.scss */
+.font-details-accent { font-family: var(--font-family-base); font-weight: 400; font-size: 12px; line-height: 16px; }
+.font-main           { font-family: var(--font-family-base); font-weight: 400; font-size: 14px; line-height: 18px; }
+.font-accent         { font-family: var(--font-family-base); font-weight: 400; font-size: 16px; line-height: 24px; }
+.font-accent-bold    { font-family: var(--font-family-base); font-weight: 700; font-size: 16px; line-height: 24px; }
+.font-block-heading       { font-family: var(--font-family-base); font-weight: 400; font-size: 20px; line-height: 28px; }
+.font-block-heading-bold  { font-family: var(--font-family-base); font-weight: 700; font-size: 20px; line-height: 28px; }
+.font-weight-normal { font-weight: 400; }
+.font-weight-md     { font-weight: 500; }
+.font-weight-bold   { font-weight: 600; }
+.font-weight-bolder { font-weight: 700; }
+
+/* Semantic heading / body tokens */
+.page-title { font-family: var(--font-family-base); font-size: 20px; line-height: 28px; font-weight: 700; color: var(--text-main); }
+.card-title { font-family: var(--font-family-base); font-size: 16px; line-height: 24px; font-weight: 700; color: var(--text-main); }
+
+/* Dashed-underline link — the signature e-Comet link style */
+.font-link,
+a.font-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--link-underline);
+    transition: border-color 0.15s ease;
+}
+.font-link:hover { border-bottom: 1px dashed var(--primary); }
+
+/* Color utilities */
+.color-danger   { color: var(--danger) !important; }
+.color-warning  { color: var(--warning); }
+.color-success,
+.color-green    { color: var(--success); }
+.color-secondary{ color: var(--secondary); }
+.color-primary  { color: var(--primary-dark-blue) !important; }
+.color-gray     { color: var(--gray) !important; }
+
+/* Status dot used in list cells */
+.round-status { display: inline-flex; align-items: center; }
+.round-status::before {
+    content: ''; display: block; width: 9px; height: 9px; margin-right: 7px; border-radius: 50%;
+}
+.round-status_green::before  { background-color: #00ab79; }
+.round-status_yellow::before { background-color: var(--secondary); }
+.round-status_gray::before   { background-color: var(--gray); }
+.round-status_red::before    { background-color: var(--danger); }

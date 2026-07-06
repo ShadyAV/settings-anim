@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/e-comet-design-system-236942df-a5a6-4b3e-8e72-7ddf8d5a2f51/colors_and_type.css">
+<script src="_ds/e-comet-design-system-236942df-a5a6-4b3e-8e72-7ddf8d5a2f51/_ds_bundle.js"></script>
+<style>
+  body { margin:0; background:#0e0e10; }
+  @keyframes ec-spin { to { transform: rotate(360deg); } }
+  @keyframes ec-pulse { 0%,100% { opacity:1; } 50% { opacity:.45; } }
+  @keyframes ec-slidein { from { transform: translateY(14px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+  @keyframes ec-pop { 0% { transform: scale(.6); opacity:0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity:1; } }
+  @keyframes ec-comet { 0%,100% { transform: translateX(0) rotate(0); } 50% { transform: translateX(3px) rotate(8deg); } }
+  a { color: var(--blue); } a:hover { color: var(--reddish-orange-300); }
+  input[type=range]{ accent-color: var(--secondary); }
+</style>
+</helmet>
+<div data-bs-theme="dark" style="min-height:100vh;background:#0e0e10;font-family:var(--font-family-base);color:var(--text-main);padding:28px 24px 80px;box-sizing:border-box;">
+  <div style="max-width:1080px;margin:0 auto;">
+
+    <div style="margin:0 0 18px;">
+      <div style="font-family:var(--font-family-base);font-size:22px;line-height:28px;font-weight:700;color:var(--grayish-white);">Индикатор сохранения настроек</div>
+      <div style="font-size:14px;line-height:20px;color:var(--cell-white);max-width:720px;margin-top:6px;">Настройки сохраняются автоматически через 5&nbsp;секунд после изменения. Раньше в это время не было никакой обратной связи — прототип показывает состояние сохранения на всех этапах: <strong style="color:var(--grayish-white)">ожидание → сохранение → сохранено / ошибка</strong>. Переключите настройку внизу, чтобы запустить реальный отсчёт.</div>
+    </div>
+
+    <!-- DEMO PANEL -->
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;background:var(--very-dark-gray);border:1px solid var(--dark-gray-3);border-radius:8px;padding:14px 16px;margin-bottom:20px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <span style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-weak);">Вариант индикатора</span>
+        <div style="display:inline-flex;background:#0e0e10;border:1px solid var(--dark-gray-3);border-radius:8px;padding:3px;gap:2px;">
+          <button onClick="{{ h.styleA }}" style="{{ segA }}">A · Чип</button>
+          <button onClick="{{ h.styleD }}" style="{{ segD }}">D · Чип + кнопка</button>
+          <button onClick="{{ h.styleE }}" style="{{ segE }}">E · Линия</button>
+          <button onClick="{{ h.styleG }}" style="{{ segG }}">G · Постоянный статус</button>
+          <button onClick="{{ h.styleH }}" style="{{ segH }}">H · Рамка блока</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;min-width:200px;">
+        <span style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-weak);">Дебаунс: {{ debounceSec }} c</span>
+        <input type="range" min="2" max="8" step="1" value="{{ debounceMs }}" onInput="{{ h.setDebounce }}" style="width:200px;">
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--cell-white);cursor:pointer;user-select:none;">
+        <span onClick="{{ h.toggleErrorMode }}" style="{{ errTrack }}"><span style="{{ errKnob }}"></span></span>
+        <span onClick="{{ h.toggleErrorMode }}">Симулировать ошибку сохранения</span>
+      </label>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-left:auto;">
+        <span style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-weak);">Показать состояние</span>
+        <div style="display:flex;gap:6px;">
+          <button onClick="{{ h.showQueued }}" style="{{ ghostBtn }}">Ожидание</button>
+          <button onClick="{{ h.showSaving }}" style="{{ ghostBtn }}">Сохранение</button>
+          <button onClick="{{ h.showSaved }}" style="{{ ghostBtn }}">Сохранено</button>
+          <button onClick="{{ h.showError }}" style="{{ ghostBtn }}">Ошибка</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS CARD (recreation) -->
+    <div style="position:relative;background:var(--very-dark-gray);border-radius:8px;overflow:hidden;transition:border-color .3s,box-shadow .3s;border:1px solid {{ cardBorder }};box-shadow:{{ cardGlow }};">
+
+      <!-- INDICATOR E: top progress line -->
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,.06);z-index:5;transition:opacity .3s;opacity:{{ lineOpacity }};">
+        <div style="height:100%;background:{{ lineBg }};width:{{ lineW }};transition:width .1s linear,background .25s;animation:{{ lineAnim }};"></div>
+      </div>
+
+      <!-- block header -->
+      <div style="display:flex;align-items:center;gap:12px;padding:16px 18px 12px;">
+        <svg width="12" height="12" viewBox="0 0 12 12" style="opacity:.7;"><path d="M2 4l4 4 4-4" stroke="#bbbac0" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span style="font-size:16px;font-weight:700;color:var(--grayish-white);">Настройки</span>
+
+        <!-- INDICATOR A: header chip -->
+        <sc-if value="{{ chipShow }}" hint-placeholder-val="{{ false }}">
+          <span style="display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 9px;border-radius:9999px;font-size:13px;font-weight:600;white-space:nowrap;transition:background .25s,color .25s;background:{{ chipBg }};color:{{ chipColor }};">
+            <sc-if value="{{ chipIdle }}" hint-placeholder-val="{{ false }}">
+              <span style="display:inline-flex;"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" stroke="#787889" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>Все изменения сохранены</span>
+            </sc-if>
+            <sc-if value="{{ isQueued }}" hint-placeholder-val="{{ false }}">
+              <span style="position:relative;display:inline-flex;width:18px;height:18px;">
+                <svg width="18" height="18" viewBox="0 0 32 32" style="transform:rotate(-90deg);"><circle cx="16" cy="16" r="13" fill="none" stroke="rgba(240,188,116,.22)" stroke-width="4"/><circle cx="16" cy="16" r="13" fill="none" stroke="var(--secondary)" stroke-width="4" stroke-linecap="round" stroke-dasharray="{{ ringCirc }}" stroke-dashoffset="{{ ringOffset }}"/></svg>
+              </span>
+              <span>Сохраним через {{ countSec }}&nbsp;с</span>
+            </sc-if>
+            <sc-if value="{{ isSaving }}" hint-placeholder-val="{{ false }}">
+              <span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(240,188,116,.3);border-top-color:var(--secondary);border-radius:50%;animation:ec-spin .7s linear infinite;"></span>
+              <span>Сохранение…</span>
+            </sc-if>
+            <sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}">
+              <span style="display:inline-flex;animation:ec-pop .35s ease;"><svg width="15" height="15" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span>Сохранено</span>
+            </sc-if>
+            <sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+              <span style="display:inline-flex;"><svg width="15" height="15" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="#e11d48" stroke-width="1.5"/><path d="M8 4.5v4M8 11h.01" stroke="#e11d48" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              <span>Не сохранено</span>
+              <button onClick="{{ h.retry }}" style="background:none;border:none;color:#ff6b8a;font:inherit;font-weight:700;cursor:pointer;padding:0 0 0 2px;text-decoration:underline;text-underline-offset:2px;">Повторить</button>
+            </sc-if>
+          </span>
+        </sc-if>
+
+        <!-- INDICATOR D: chip actions -->
+        <sc-if value="{{ dActions }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ h.saveNow }}" style="background:transparent;border:1px solid var(--reddish-orange);color:var(--grayish-white);font:inherit;font-size:13px;font-weight:600;padding:5px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;">Сохранить сейчас</button>
+          <button onClick="{{ h.cancel }}" style="background:none;border:none;color:var(--text-weak);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:0;">Отменить</button>
+        </sc-if>
+
+        <!-- INDICATORS E/H: right-side status text -->
+        <sc-if value="{{ rsShow }}" hint-placeholder-val="{{ false }}">
+          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap;transition:color .25s;color:{{ rsColor }};">
+            <sc-if value="{{ isSaving }}" hint-placeholder-val="{{ false }}"><span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(240,188,116,.3);border-top-color:var(--secondary);border-radius:50%;animation:ec-spin .7s linear infinite;"></span></sc-if>
+            <sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 16 16" style="animation:ec-pop .35s ease;"><path d="M3.5 8.5l3 3 6-7" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+            <span>{{ rsText }}</span>
+            <sc-if value="{{ rsError }}" hint-placeholder-val="{{ false }}"><button onClick="{{ h.retry }}" style="background:none;border:none;color:#ff8ba3;font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">Повторить</button></sc-if>
+          </span>
+        </sc-if>
+      </div>
+
+      <div style="padding:0 18px 18px;">
+        <!-- top toggles -->
+        <div style="display:flex;gap:36px;padding:6px 0 18px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span onClick="{{ h.toggleManaged }}" style="{{ tg.managed.track }}"><span style="{{ tg.managed.knob }}"></span></span>
+            <span style="font-size:14px;color:var(--grayish-white);">Управляется</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span onClick="{{ h.togglePause }}" style="{{ tg.pause.track }}"><span style="{{ tg.pause.knob }}"></span></span>
+            <span style="font-size:14px;color:var(--grayish-white);">Пауза</span>
+          </div>
+        </div>
+
+        <!-- Управление ставкой -->
+        <fieldset style="border:1px solid var(--dark-gray-3);border-radius:8px;margin:0 0 16px;padding:16px;">
+          <legend style="font-size:13px;color:var(--cell-white);padding:0 6px;">Управление ставкой</legend>
+          <div style="display:flex;flex-wrap:wrap;gap:28px 40px;align-items:flex-start;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-size:12px;color:var(--text-weak);">Зона показов</span>
+              <div style="display:flex;align-items:center;gap:8px;font-size:14px;">
+                <span onClick="{{ h.zoneSearch }}" style="cursor:pointer;font-weight:600;color:{{ zoneSearchColor }};">Поиск</span>
+                <span onClick="{{ h.zoneToggle }}" style="{{ tg.zone.track }}"><span style="{{ tg.zone.knob }}"></span></span>
+                <span onClick="{{ h.zoneShelf }}" style="cursor:pointer;font-weight:600;color:{{ zoneShelfColor }};">Полки</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-size:12px;color:var(--text-weak);">Держать макс. ставку</span>
+              <span onClick="{{ h.toggleHold }}" style="{{ tg.holdMax.track }}"><span style="{{ tg.holdMax.knob }}"></span></span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-size:12px;color:var(--text-weak);">Целевая позиция</span>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <button onClick="{{ h.decPos }}" style="{{ stepBtn }}">−</button>
+                <span style="font-size:15px;font-weight:700;color:var(--grayish-white);min-width:14px;text-align:center;">{{ v.targetPos }}</span>
+                <button onClick="{{ h.incPos }}" style="{{ stepBtn }}">+</button>
+                <svg width="15" height="15" viewBox="0 0 16 16" style="margin-left:2px;"><path d="M8 2l6 11H2z" fill="none" stroke="var(--warning)" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6.5v3M8 11h.01" stroke="var(--warning)" stroke-width="1.3" stroke-linecap="round"/></svg>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-size:12px;color:var(--text-weak);">Тек. позиция</span>
+              <span style="font-size:15px;color:var(--text-weak);">—</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-size:12px;color:var(--text-weak);">Макс. ставка</span>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <button onClick="{{ h.decBid }}" style="{{ stepBtn }}">−</button>
+                <span style="font-size:15px;font-weight:700;color:var(--grayish-white);min-width:44px;text-align:center;">{{ v.maxBid }} ₽</span>
+                <button onClick="{{ h.incBid }}" style="{{ stepBtn }}">+</button>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-size:12px;color:var(--text-weak);">Тек. ставка</span>
+              <span style="font-size:15px;color:var(--text-weak);">—</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Триггеры паузы + Автопополнение -->
+        <div style="display:flex;flex-wrap:wrap;gap:16px;">
+          <fieldset style="flex:1 1 460px;border:1px solid var(--dark-gray-3);border-radius:8px;margin:0;padding:16px;">
+            <legend style="font-size:13px;color:var(--cell-white);padding:0 6px;">Триггеры паузы</legend>
+            <div style="display:flex;flex-wrap:wrap;gap:22px 34px;">
+              <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-size:12px;color:var(--text-weak);">Мин. остаток</span><span style="font-size:14px;color:var(--text-weak);">—</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-size:12px;color:var(--text-weak);">Макс. расход</span><span style="font-size:14px;color:var(--text-weak);">—</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-size:12px;color:var(--text-weak);">Время показа</span><span style="font-size:14px;color:var(--grayish-white);">100&nbsp;%</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-size:12px;color:var(--text-weak);">Мин. оценка отзыва</span><span style="font-size:14px;color:var(--text-weak);">—</span></div>
+            </div>
+          </fieldset>
+          <fieldset style="flex:1 1 300px;border:1px solid var(--dark-gray-3);border-radius:8px;margin:0;padding:16px;">
+            <legend style="font-size:13px;color:var(--cell-white);padding:0 6px;">Автопополнение</legend>
+            <div style="display:flex;flex-wrap:wrap;gap:22px 34px;">
+              <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-size:12px;color:var(--text-weak);">Мин. бюджет</span><span style="font-size:14px;color:var(--text-weak);">—</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-size:12px;color:var(--text-weak);">Счёт пополнения</span><span style="font-size:14px;color:var(--blue);">2 счёта</span></div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    style: 'A',
+    saveState: 'idle',
+    remaining: 0,
+    deadline: 0,
+    pending: 0,
+    errorMode: false,
+    debounceMs: 5000,
+    v: { managed:false, pause:false, zone:'search', holdMax:false, targetPos:3, maxBid:121 },
+    changed: {},
+  };
+
+  componentDidMount(){ this._snap=null; this._tick = setInterval(()=>this.tick(), 33); }
+  componentWillUnmount(){ clearInterval(this._tick); clearTimeout(this._saveT); clearTimeout(this._doneT); clearTimeout(this._idleT); }
+
+  tick(){
+    if (this.state.saveState==='queued'){
+      const rem = Math.max(0, this.state.deadline - Date.now());
+      if (rem !== this.state.remaining) this.setState({ remaining: rem });
+    }
+  }
+
+  clearTimers(){ clearTimeout(this._saveT); clearTimeout(this._doneT); clearTimeout(this._idleT); }
+
+  markChange(key){
+    if (!this._snap) this._snap = JSON.parse(JSON.stringify(this.state.v));
+    this.clearTimers();
+    const changed = { ...this.state.changed, [key]: true };
+    const deadline = Date.now() + this.state.debounceMs;
+    this.setState({ saveState:'queued', deadline, remaining:this.state.debounceMs, changed, pending:Object.keys(changed).length });
+    this._saveT = setTimeout(()=>this.startSave(), this.state.debounceMs);
+  }
+
+  startSave(){
+    this.clearTimers();
+    this.setState({ saveState:'saving', remaining:0 });
+    this._doneT = setTimeout(()=>{
+      if (this.state.errorMode){
+        this.setState({ saveState:'error' });
+      } else {
+        this._snap = null;
+        this.setState({ saveState:'saved' });
+        this._idleT = setTimeout(()=> this.setState({ saveState:'idle', pending:0, changed:{} }), 2600);
+      }
+    }, 1200);
+  }
+
+  saveNow(){ if (this.state.saveState==='queued'){ this.clearTimers(); this.startSave(); } }
+  retry(){ this.clearTimers(); this.startSave(); }
+  cancel(){
+    this.clearTimers();
+    const v = this._snap ? this._snap : this.state.v; this._snap = null;
+    this.setState({ v, saveState:'idle', pending:0, changed:{} });
+  }
+
+  toggle(key){ this.setState({ v: { ...this.state.v, [key]: !this.state.v[key] } }); this.markChange(key); }
+  setZone(z){ if (this.state.v.zone===z) return; this.setState({ v:{ ...this.state.v, zone:z } }); this.markChange('zone'); }
+  bump(key, delta, min, max){ let nv = this.state.v[key] + delta; nv = Math.max(min, Math.min(max, nv)); if (nv===this.state.v[key]) return; this.setState({ v:{ ...this.state.v, [key]:nv } }); this.markChange(key); }
+
+  // preview forcing
+  force(st){
+    this.clearTimers();
+    if (st==='queued'){ const d=Date.now()+this.state.debounceMs; this.setState({saveState:'queued',deadline:d,remaining:this.state.debounceMs,changed:{managed:true},pending:1}); this._saveT=setTimeout(()=>this.startSave(),this.state.debounceMs); return; }
+    this.setState({ saveState:st, changed:{managed:true,zone:true}, pending:2, remaining:0 });
+  }
+
+  tgStyle(on, accent){
+    const track = `position:relative;display:inline-block;width:36px;height:20px;border-radius:9999px;cursor:pointer;flex:none;transition:background .2s;background:${on ? (accent||'var(--secondary)') : '#3a3a3f'};`;
+    const knob = `position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(${on?16:0}px);`;
+    return { track, knob };
+  }
+
+  fdotFor(key){
+    const on = this.state.style==='F' && !!this.state.changed[key] && this.state.saveState!=='idle';
+    if (!on) return 'display:none;';
+    const st = this.state.saveState;
+    const base = 'display:inline-block;width:9px;height:9px;border-radius:50%;box-sizing:border-box;flex:none;';
+    if (st==='queued') return base + 'background:var(--secondary);animation:ec-pulse 1s ease-in-out infinite;';
+    if (st==='saving') return base + 'background:transparent;border:2px solid rgba(240,188,116,.3);border-top-color:var(--secondary);animation:ec-spin .7s linear infinite;';
+    if (st==='saved') return base + 'background:#10b981;';
+    return base + 'background:#e11d48;';
+  }
+
+  glowFor(key){
+    const active = this.state.style==='C' && !!this.state.changed[key] && this.state.saveState!=='idle';
+    if (!active) return { box:'', label:'var(--grayish-white)' };
+    let color = 'var(--secondary)';
+    if (this.state.saveState==='saved') color = '#10b981';
+    if (this.state.saveState==='error') color = '#e11d48';
+    return {
+      box:`box-shadow:0 0 0 1px ${color}, 0 0 14px -2px ${color};border-radius:8px;padding:8px 10px;margin:-8px -10px;transition:box-shadow .3s;`,
+      label: color
+    };
+  }
+
+  renderVals(){
+    const st = this.state.saveState, v = this.state.v, style = this.state.style;
+    const isIdle=st==='idle', isQueued=st==='queued', isSaving=st==='saving', isSaved=st==='saved', isError=st==='error';
+    const active = st!=='idle';
+
+    const ringCirc = 2*Math.PI*13;
+    const frac = this.state.debounceMs>0 ? this.state.remaining/this.state.debounceMs : 0;
+    const ringOffset = ringCirc * (1-frac);
+    const barPct = Math.round(frac*100);
+    const countSec = Math.ceil(this.state.remaining/1000);
+
+    const seg = (on)=>`background:${on?'var(--reddish-orange)':'transparent'};color:${on?'#fff':'var(--cell-white)'};border:none;border-radius:6px;padding:7px 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s;`;
+    const ghostBtn = 'background:#0e0e10;border:1px solid var(--dark-gray-3);color:var(--cell-white);font:inherit;font-size:12px;font-weight:600;padding:6px 10px;border-radius:7px;cursor:pointer;';
+    const stepBtn = 'width:26px;height:26px;border-radius:6px;border:1px solid var(--dark-gray-3);background:#0e0e10;color:var(--grayish-white);font:inherit;font-size:16px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;';
+
+    // chip (A)
+    let chipBg='rgba(240,188,116,.14)', chipColor='var(--secondary)';
+    if (isSaved){ chipBg='rgba(16,185,129,.16)'; chipColor='#34d399'; }
+    if (isError){ chipBg='rgba(225,29,72,.16)'; chipColor='#ff8ba3'; }
+
+    // card border (H)
+    const hActive = style==='H' && active;
+    let hColor = 'var(--secondary)';
+    if (isSaved) hColor = '#10b981';
+    if (isError) hColor = '#e11d48';
+    const cardBorder = hActive ? hColor : 'var(--dark-gray-3)';
+    const cardGlow = hActive ? `0 0 18px -6px ${hColor}` : 'none';
+
+    // line (E)
+    const lineShow = style==='E' && active;
+    let lineBg = 'var(--brand-gradient)';
+    if (isSaved) lineBg = '#10b981';
+    if (isError) lineBg = '#e11d48';
+    const lineW = isQueued ? barPct+'%' : '100%';
+    const lineAnim = isSaving ? 'ec-pulse 1s ease-in-out infinite' : 'none';
+
+    // right-side status text (E/H)
+    const rsShow = (style==='E' || style==='H') && active;
+    let rsText='', rsColor='var(--secondary)';
+    if (isQueued) rsText = `Сохраним через ${countSec}\u00A0с`;
+    if (isSaving) rsText = 'Сохранение…';
+    if (isSaved){ rsText = 'Сохранено'; rsColor = '#34d399'; }
+    if (isError){ rsText = 'Не сохранено'; rsColor = '#ff8ba3'; }
+
+    // chip idle (G)
+    const chipIdle = style==='G' && isIdle;
+    if (chipIdle){ chipBg='rgba(255,255,255,.05)'; chipColor='var(--text-weak)'; }
+
+    return {
+      segD: seg(style==='D'), segE: seg(style==='E'), segG: seg(style==='G'), segH: seg(style==='H'),
+      dActions: style==='D' && isQueued,
+      lineOpacity: lineShow ? 1 : 0, lineBg, lineW, lineAnim,
+      rsShow, rsText, rsColor, rsError: rsShow && isError,
+      cardBorder, cardGlow, chipIdle,
+      // demo panel
+      segA: seg(style==='A'),
+      ghostBtn, stepBtn,
+      debounceMs: this.state.debounceMs, debounceSec: Math.round(this.state.debounceMs/1000),
+      errTrack: this.tgStyle(this.state.errorMode, '#e11d48').track, errKnob: this.tgStyle(this.state.errorMode).knob,
+
+      // settings values
+      v,
+      tg: {
+        managed: this.tgStyle(v.managed), pause: this.tgStyle(v.pause),
+        holdMax: this.tgStyle(v.holdMax), zone: this.tgStyle(v.zone==='shelf'),
+      },
+      zoneSearchColor: v.zone==='search' ? 'var(--secondary)' : 'var(--text-weak)',
+      zoneShelfColor: v.zone==='shelf' ? 'var(--secondary)' : 'var(--text-weak)',
+
+      // state flags
+      isIdle, isQueued, isSaving, isSaved, isError,
+      countSec, ringCirc, ringOffset, barPct, pending:this.state.pending,
+
+      // chip A/D/G
+      chipShow: ((style==='A' || style==='D') && active) || style==='G', chipBg, chipColor,
+
+      // handlers
+      h: {
+        styleA: ()=>this.setState({style:'A'}), styleD: ()=>this.setState({style:'D'}), styleE: ()=>this.setState({style:'E'}),
+        styleG: ()=>this.setState({style:'G'}), styleH: ()=>this.setState({style:'H'}),
+        setDebounce: (e)=>this.setState({debounceMs: parseInt(e.target.value,10)*1000}),
+        toggleErrorMode: ()=>this.setState({errorMode:!this.state.errorMode}),
+        showQueued: ()=>this.force('queued'), showSaving: ()=>this.force('saving'), showSaved: ()=>this.force('saved'), showError: ()=>this.force('error'),
+        toggleManaged: ()=>this.toggle('managed'), togglePause: ()=>this.toggle('pause'), toggleHold: ()=>this.toggle('holdMax'),
+        zoneSearch: ()=>this.setZone('search'), zoneShelf: ()=>this.setZone('shelf'), zoneToggle: ()=>this.setZone(v.zone==='search'?'shelf':'search'),
+        incPos: ()=>this.bump('targetPos',1,1,50), decPos: ()=>this.bump('targetPos',-1,1,50),
+        incBid: ()=>this.bump('maxBid',5,0,9999), decBid: ()=>this.bump('maxBid',-5,0,9999),
+        saveNow: ()=>this.saveNow(), cancel: ()=>this.cancel(), retry: ()=>this.retry(),
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
