@@ -16,12 +16,7 @@
   @keyframes ec-pulse { 0%,100% { opacity:1; } 50% { opacity:.45; } }
   @keyframes ec-pop { 0% { transform: scale(.6); opacity:0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity:1; } }
   @keyframes ec-fadein { from { opacity:0; transform: translateY(-4px); } to { opacity:1; transform: translateY(0); } }
-  a { color: var(--blue); } a:hover { color: var(--reddish-orange-300); }
-  .ec-hbtn-save:hover { background: var(--reddish-orange) !important; color: #fff !important; }
-  .ec-hbtn-cancel:hover { background: rgba(255,255,255,.08) !important; border-color: var(--cell-white) !important; }
-  .ec-hbtn-danger:hover { background: rgba(225,29,72,.16) !important; }
-  .ec-hbtn-ghost:hover { background: rgba(255,255,255,.08) !important; color: var(--grayish-white) !important; }
-  .ec-hlink:hover { color: #fff !important; border-bottom-color: #fff !important; }
+  a { color: var(--blue); } a:hover { color: var(--reddish-orange-300); }  .ec-hlink:hover { color: #fff !important; border-bottom-color: #fff !important; }
   input[type=range]{ accent-color: var(--secondary); }
 </style>
 </helmet>
@@ -30,21 +25,14 @@
 
     <div style="margin:0 0 18px;">
       <div style="font-family:var(--font-family-base);font-size:22px;line-height:28px;font-weight:700;color:var(--grayish-white);">Индикатор сохранения настроек — v2, отмена изменений</div>
-      <div style="font-size:14px;line-height:20px;color:var(--cell-white);max-width:760px;margin-top:6px;">База — рамка блока (H). Добавлена возможность <strong style="color:var(--grayish-white)">отменить изменения до сохранения</strong>: <strong style="color:var(--grayish-white)">H1</strong> — по ТЗ (наведение на чип ставит отсчёт на паузу, клик — предупреждение об отмене); <strong style="color:var(--grayish-white)">H2</strong> — явная кнопка «Отменить» без предупреждения, но с возможностью вернуть изменения после отмены.</div>
+      <div style="font-size:14px;line-height:20px;color:var(--cell-white);max-width:760px;margin-top:6px;">Вариант <strong style="color:var(--grayish-white)">H5 · Тихий</strong>: статус сохранения появляется справа в шапке блока, а во время ожидания доступна тихая отмена.</div>
     </div>
 
     <!-- DEMO PANEL -->
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;background:var(--very-dark-gray);border:1px solid var(--dark-gray-3);border-radius:8px;padding:14px 16px;margin-bottom:20px;">
       <div style="display:flex;flex-direction:column;gap:6px;">
         <span style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-weak);">Вариант</span>
-        <div style="display:inline-flex;background:#0e0e10;border:1px solid var(--dark-gray-3);border-radius:8px;padding:3px;gap:2px;">
-          <button onClick="{{ h.styleH1 }}" style="{{ segH1 }}">H1 · Клик по чипу</button>
-          <button onClick="{{ h.styleH2 }}" style="{{ segH2 }}">H2 · Явная отмена</button>
-          <button onClick="{{ h.styleH4 }}" style="{{ segH4 }}">H4 · Компактные кнопки</button>
-          <button onClick="{{ h.styleH5 }}" style="{{ segH5 }}">H5 · Тихий</button>
-          <button onClick="{{ h.styleH3 }}" style="{{ segH3 }}">H3 · Текст вместо чипа</button>
-          <button onClick="{{ h.styleH }}" style="{{ segH }}">H · Без отмены</button>
-        </div>
+        <span style="display:inline-flex;align-items:center;background:#0e0e10;border:1px solid var(--dark-gray-3);border-radius:8px;padding:7px 13px;font-size:13px;font-weight:600;color:var(--grayish-white);">H5 · Тихий</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;min-width:160px;">
         <span style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-weak);">Дебаунс: {{ debounceSec }} c</span>
@@ -110,49 +98,9 @@
                   </sc-if>
                 </span>
                 <span>Изменения отменены</span>
-                <button onClick="{{ h.redo }}" class="ec-hlink" style="background:none;border:none;color:var(--grayish-white);font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:0 0 0 2px;border-bottom:1px dashed rgba(239,239,241,.5);transition:border-color .15s,color .15s;">Вернуть</button>
+                <button onClick="{{ h.redo }}" class="ec-hlink" style="background:none;border:none;color:var(--cell-white);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:0 0 0 2px;border-bottom:1px dashed rgba(187,186,192,.5);transition:border-color .15s,color .15s;">Вернуть</button>
               </sc-if>
             </span>
-
-            <!-- tooltip: pause on hover (H1) -->
-            <sc-if value="{{ ttShow }}" hint-placeholder-val="{{ false }}">
-              <span style="position:absolute;top:calc(100% + 8px);left:0;background:var(--very-dark-gray-800);border:1px solid var(--dark-gray-3);box-shadow:var(--popup-shadow);border-radius:8px;padding:8px 12px;font-size:12px;line-height:16px;color:var(--grayish-white);white-space:nowrap;z-index:30;pointer-events:none;animation:ec-fadein .15s ease;">Отсчёт на паузе. Нажмите, чтобы отменить изменения</span>
-            </sc-if>
-
-            <!-- confirm popover (H1) -->
-            <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
-              <span style="position:absolute;top:calc(100% + 8px);left:0;display:flex;flex-direction:column;gap:10px;background:var(--very-dark-gray-800);border:1px solid var(--dark-gray-3);box-shadow:var(--popup-shadow);border-radius:8px;padding:14px 16px;z-index:40;width:280px;animation:ec-fadein .15s ease;">
-                <span style="font-size:14px;font-weight:700;color:var(--grayish-white);">Отменить изменения?</span>
-                <span style="font-size:13px;line-height:18px;color:var(--cell-white);">Изменённых настроек: {{ pending }}. Значения вернутся к прежним, сохранение не выполнится</span>
-                <span style="display:flex;gap:8px;">
-                  <button onClick="{{ h.confirmCancel }}" style="background:transparent;border:1px solid #e11d48;color:#ff8ba3;font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;transition:background .15s;" class="ec-hbtn-danger">Да, отменить</button>
-                  <button onClick="{{ h.confirmKeep }}" style="background:transparent;border:1px solid var(--dark-gray-3);color:var(--cell-white);font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;transition:background .15s;" class="ec-hbtn-ghost">Продолжить</button>
-                </span>
-              </span>
-            </sc-if>
-          </span>
-        </sc-if>
-
-        <!-- H2: explicit actions -->
-        <sc-if value="{{ h2Actions }}" hint-placeholder-val="{{ false }}">
-          <span style="{{ actionsStyle }}">
-          <button onClick="{{ h.cancel }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-cancel" style="display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--dark-gray-3);color:var(--grayish-white);font:inherit;font-size:13px;font-weight:600;padding:5px 12px;border-radius:9999px;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s;">
-            <svg width="11" height="11" viewBox="0 0 12 12"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            Отменить
-          </button>
-          <button onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" style="background:transparent;border:1px solid var(--reddish-orange);color:var(--grayish-white);font:inherit;font-size:13px;font-weight:600;padding:5px 13px;border-radius:9999px;cursor:pointer;white-space:nowrap;transition:background .15s;" class="ec-hbtn-save">Сохранить сейчас</button>
-          </span>
-        </sc-if>
-
-        <!-- H4: compact icon actions -->
-        <sc-if value="{{ h4Actions }}" hint-placeholder-val="{{ false }}">
-          <span style="display:inline-flex;align-items:center;gap:6px;">
-            <button title="Отменить изменения" onClick="{{ h.cancel }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-cancel" style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:transparent;border:1px solid var(--dark-gray-3);color:var(--cell-white);border-radius:50%;cursor:pointer;padding:0;transition:background .15s,border-color .15s,color .15s;">
-              <svg width="11" height="11" viewBox="0 0 12 12"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            </button>
-            <button title="Сохранить сейчас" onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-save" style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:transparent;border:1px solid var(--reddish-orange);color:var(--grayish-white);border-radius:50%;cursor:pointer;padding:0;transition:background .15s;">
-              <svg width="12" height="12" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
           </span>
         </sc-if>
 
@@ -160,16 +108,6 @@
         <sc-if value="{{ h5Actions }}" hint-placeholder-val="{{ false }}">
           <span style="display:inline-flex;align-items:center;gap:14px;" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}">
             <button onClick="{{ h.cancel }}" class="ec-hlink" style="background:none;border:none;color:var(--cell-white);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:0;border-bottom:1px dashed rgba(187,186,192,.5);transition:border-color .15s,color .15s;">Отменить</button>
-            <button onClick="{{ h.saveNow }}" class="ec-hlink" style="background:none;border:none;color:var(--secondary);font:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:0;border-bottom:1px dashed rgba(240,188,116,.5);transition:border-color .15s,color .15s;">Сохранить</button>
-          </span>
-        </sc-if>
-
-        <!-- H: right-side status text -->
-        <sc-if value="{{ rsShow }}" hint-placeholder-val="{{ false }}">
-          <span style="margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap;transition:color .25s;color:{{ rsColor }};">
-            <sc-if value="{{ isSaving }}" hint-placeholder-val="{{ false }}"><span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(240,188,116,.3);border-top-color:var(--secondary);border-radius:50%;animation:ec-spin .7s linear infinite;"></span></sc-if>
-            <sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}"><svg width="13" height="13" viewBox="0 0 16 16" style="animation:ec-pop .35s ease;"><path d="M3.5 8.5l3 3 6-7" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
-            <span>{{ rsText }}</span>
           </span>
         </sc-if>
       </div>
@@ -253,30 +191,15 @@
       </div>
 
     </div>
-
-    <!-- comparison notes -->
-    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:20px;">
-      <div style="flex:1 1 320px;background:var(--very-dark-gray);border:1px solid var(--dark-gray-3);border-radius:8px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:var(--grayish-white);margin-bottom:6px;">H1 · Клик по чипу (по ТЗ)</div>
-        <div style="font-size:13px;line-height:19px;color:var(--cell-white);">Наведение на чип замораживает отсчёт, тултип подсказывает про отмену, клик открывает подтверждение. Компактно, но действие скрыто за наведением — новый пользователь может его не найти, а подтверждение добавляет второй клик</div>
-      </div>
-      <div style="flex:1 1 320px;background:var(--very-dark-gray);border:1px solid var(--dark-gray-3);border-radius:8px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:var(--grayish-white);margin-bottom:6px;">H2 · Явная отмена (рекомендую)</div>
-        <div style="font-size:13px;line-height:19px;color:var(--cell-white);">Пока идёт отсчёт, рядом с чипом видны «Отменить» и «Сохранить сейчас» — наведение на них тоже ставит паузу. Отмена срабатывает сразу, без предупреждения: ошибочная отмена обратима кнопкой «Вернуть». Один клик вместо двух, ничего не спрятано</div>
-      </div>
-    </div>
-
   </div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = {
-    style: 'H1',
+    style: 'H5',
     saveState: 'idle', // idle | queued | saving | saved | error | cancelled
-    paused: false,
-    confirmOpen: false,
-    remaining: 0,
+    paused: false,    remaining: 0,
     deadline: 0,
     undoRemaining: 0,
     undoDeadline: 0,
@@ -310,13 +233,13 @@ class Component extends DCLogic {
     this.clearTimers();
     const changed = { ...this.state.changed, [key]: true };
     const deadline = Date.now() + this.state.debounceMs;
-    this.setState({ saveState:'queued', deadline, remaining:this.state.debounceMs, changed, pending:Object.keys(changed).length, paused:false, confirmOpen:false });
+    this.setState({ saveState:'queued', deadline, remaining:this.state.debounceMs, changed, pending:Object.keys(changed).length, paused:false });
     this._saveT = setTimeout(()=>this.startSave(), this.state.debounceMs);
   }
 
   startSave(){
     this.clearTimers();
-    this.setState({ saveState:'saving', remaining:0, paused:false, confirmOpen:false });
+    this.setState({ saveState:'saving', remaining:0, paused:false });
     this._doneT = setTimeout(()=>{
       if (this.state.errorMode){
         this.setState({ saveState:'error' });
@@ -342,7 +265,7 @@ class Component extends DCLogic {
     }
   }
   resume(){
-    if (!this.state.paused || this.state.confirmOpen) return;
+    if (!this.state.paused) return;
     if (this.state.saveState==='queued'){
       const rem = this._pausedRem || this.state.remaining;
       const deadline = Date.now() + rem;
@@ -369,7 +292,7 @@ class Component extends DCLogic {
     this._redoChanged = { ...this.state.changed };
     const v = this._snap ? this._snap : this.state.v; this._snap = null;
     const UNDO_MS = 6000;
-    this.setState({ v, saveState:'cancelled', paused:false, confirmOpen:false, pending:0, changed:{}, undoDeadline: Date.now()+UNDO_MS, undoRemaining: UNDO_MS });
+    this.setState({ v, saveState:'cancelled', paused:false, pending:0, changed:{}, undoDeadline: Date.now()+UNDO_MS, undoRemaining: UNDO_MS });
     this._undoT = setTimeout(()=> this.setState({ saveState:'idle' }), UNDO_MS);
   }
 
@@ -393,10 +316,10 @@ class Component extends DCLogic {
     if (st==='queued'){
       if (!this._snap) this._snap = JSON.parse(JSON.stringify(this.state.v));
       const d=Date.now()+this.state.debounceMs;
-      this.setState({saveState:'queued',deadline:d,remaining:this.state.debounceMs,changed:{managed:true},pending:1,paused:false,confirmOpen:false});
+      this.setState({saveState:'queued',deadline:d,remaining:this.state.debounceMs,changed:{managed:true},pending:1,paused:false});
       this._saveT=setTimeout(()=>this.startSave(),this.state.debounceMs); return;
     }
-    this.setState({ saveState:st, changed:{managed:true,zone:true}, pending:2, remaining:0, paused:false, confirmOpen:false });
+    this.setState({ saveState:st, changed:{managed:true,zone:true}, pending:2, remaining:0, paused:false });
   }
 
   tgStyle(on, accent){
@@ -406,18 +329,15 @@ class Component extends DCLogic {
   }
 
   renderVals(){
-    const st = this.state.saveState, v = this.state.v, style = this.state.style;
-    const paused = this.state.paused, confirmOpen = this.state.confirmOpen;
+    const st = this.state.saveState, v = this.state.v;
+    const paused = this.state.paused;
     const isQueued=st==='queued', isSaving=st==='saving', isSaved=st==='saved', isError=st==='error', isCancelled=st==='cancelled';
     const active = isQueued || isSaving || isSaved || isError;
 
     const ringCirc = 2*Math.PI*13;
     const frac = this.state.debounceMs>0 ? this.state.remaining/this.state.debounceMs : 0;
     const ringOffset = ringCirc * (1-frac);
-    const countSec = Math.ceil(this.state.remaining/1000);
-
-    const seg = (on)=>`background:${on?'var(--reddish-orange)':'transparent'};color:${on?'#fff':'var(--cell-white)'};border:none;border-radius:6px;padding:7px 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s;`;
-    const ghostBtn = 'background:#0e0e10;border:1px solid var(--dark-gray-3);color:var(--cell-white);font:inherit;font-size:12px;font-weight:600;padding:6px 10px;border-radius:7px;cursor:pointer;';
+    const countSec = Math.ceil(this.state.remaining/1000);    const ghostBtn = 'background:#0e0e10;border:1px solid var(--dark-gray-3);color:var(--cell-white);font:inherit;font-size:12px;font-weight:600;padding:6px 10px;border-radius:7px;cursor:pointer;';
     const stepBtn = 'width:26px;height:26px;border-radius:6px;border:1px solid var(--dark-gray-3);background:#0e0e10;color:var(--grayish-white);font:inherit;font-size:16px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;';
 
     // chip colors
@@ -425,22 +345,11 @@ class Component extends DCLogic {
     if (isSaved){ chipBg='rgba(16,185,129,.16)'; chipColor='#34d399'; }
     if (isError){ chipBg='rgba(225,29,72,.16)'; chipColor='#ff8ba3'; }
     if (isCancelled){ chipBg='rgba(255,255,255,.06)'; chipColor='var(--cell-white)'; }
-
-    // H1: chip is clickable while queued — dashed border = e-Comet clickable signature
-    const h1Clickable = style==='H1' && isQueued;
-    const chipBase = 'display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 9px;border-radius:9999px;font-size:13px;font-weight:600;white-space:nowrap;transition:background .25s,color .25s,border-color .25s;user-select:none;';
-    if (style==='H5' && isQueued) chipColor='var(--cell-white)';
-    const chipStyle = (style==='H3' || style==='H5')
-      ? `display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap;transition:color .25s;user-select:none;background:transparent;border:none;padding:5px 0;color:${chipColor};`
-      : chipBase
-        + `background:${chipBg};color:${chipColor};`
-        + (h1Clickable
-            ? `cursor:pointer;border:1px dashed ${paused?'var(--secondary)':'rgba(240,188,116,.5)'};`
-            : 'border:1px solid transparent;');
+    if (isQueued) chipColor='var(--cell-white)';
+    const chipStyle = `display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap;transition:color .25s;user-select:none;background:transparent;border:none;padding:5px 0;color:${chipColor};`;
 
     // card border (H family)
-    const hFam = style==='H' || style==='H1' || style==='H2' || style==='H3' || style==='H4' || style==='H5';
-    const hActive = hFam && active;
+    const hActive = active;
     const soft = this.state.softBorder;
     let hColor = soft ? 'rgba(240,188,116,.4)' : 'var(--secondary)';
     if (isSaved) hColor = soft ? 'rgba(16,185,129,.45)' : '#10b981';
@@ -450,16 +359,7 @@ class Component extends DCLogic {
     if (hActive && !soft) cardGlow = `0 0 18px -6px ${hColor}`;
     if (hActive && soft && isError) cardGlow = '0 0 14px -6px #e11d48';
 
-    // H: right-side status text (no cancel variant)
-    const rsShow = style==='H' && active;
-    let rsText='', rsColor='var(--secondary)';
-    if (isQueued) rsText = `Сохраним через ${countSec}\u00A0с`;
-    if (isSaving) rsText = 'Сохранение…';
-    if (isSaved){ rsText = 'Сохранено'; rsColor = '#34d399'; }
-    if (isError){ rsText = 'Не сохранено'; rsColor = '#ff8ba3'; }
-
     return {
-      segH1: seg(style==='H1'), segH2: seg(style==='H2'), segH3: seg(style==='H3'), segH4: seg(style==='H4'), segH5: seg(style==='H5'), segH: seg(style==='H'),
       ghostBtn, stepBtn,
       debounceMs: this.state.debounceMs, debounceSec: Math.round(this.state.debounceMs/1000),
       errTrack: this.tgStyle(this.state.errorMode, '#e11d48').track, errKnob: this.tgStyle(this.state.errorMode).knob,
@@ -480,25 +380,13 @@ class Component extends DCLogic {
       undoOffset: ringCirc * (1 - (this.state.undoRemaining/6000)),
       countSec, ringCirc, ringOffset, pending: Math.max(1, this.state.pending),
 
-      chipShow: (style==='H1' || style==='H2' || style==='H3' || style==='H4' || style==='H5') && (active || isCancelled),
+      chipShow: active || isCancelled,
       chipStyle,
-      chipWrapStyle: 'position:relative;display:inline-flex;'
-        + (style==='H3' ? 'order:2;font-variant-numeric:tabular-nums;' : '')
-        + (style==='H5' ? 'margin-left:auto;font-variant-numeric:tabular-nums;' : '')
-        + (style==='H3' && !((style==='H2'||style==='H3') && isQueued) ? 'margin-left:auto;' : ''),
-      actionsStyle: 'display:inline-flex;align-items:center;gap:8px;'
-        + (style==='H3' ? 'margin-left:auto;order:1;' : ''),
-      ttShow: h1Clickable && paused && !confirmOpen,
-      confirmOpen,
-      h2Actions: (style==='H2' || style==='H3') && isQueued,
-      h4Actions: style==='H4' && isQueued,
-      h5Actions: style==='H5' && isQueued,
+      chipWrapStyle: 'position:relative;display:inline-flex;margin-left:auto;font-variant-numeric:tabular-nums;',
+      h5Actions: isQueued,
 
       cardBorder, cardGlow,
-      rsShow, rsText, rsColor, rsError: rsShow && isError,
-
       h: {
-        styleH1: ()=>this.setState({style:'H1'}), styleH2: ()=>this.setState({style:'H2'}), styleH4: ()=>this.setState({style:'H4'}), styleH5: ()=>this.setState({style:'H5'}), styleH3: ()=>this.setState({style:'H3'}), styleH: ()=>this.setState({style:'H'}),
         setDebounce: (e)=>this.setState({debounceMs: parseInt(e.target.value,10)*1000}),
         toggleErrorMode: ()=>this.setState({errorMode:!this.state.errorMode}),
         toggleSoftBorder: ()=>this.setState({softBorder:!this.state.softBorder}),
@@ -511,11 +399,9 @@ class Component extends DCLogic {
         retry: (e)=>{ if (e) e.stopPropagation(); this.retry(); },
         cancel: ()=>this.cancel(),
         redo: (e)=>{ if (e) e.stopPropagation(); this.redo(); },
-        chipEnter: ()=>{ if (style!=='H') this.pause(); },
+        chipEnter: ()=>this.pause(),
         chipLeave: ()=>this.resume(),
-        chipClick: ()=>{ if (this.state.style==='H1' && this.state.saveState==='queued'){ this.pause(); this.setState({confirmOpen:true}); } },
-        confirmCancel: ()=>this.cancel(),
-        confirmKeep: ()=>{ this.setState({confirmOpen:false}, ()=>{ this.resume(); }); },
+        chipClick: ()=>{},
       },
     };
   }
