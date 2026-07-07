@@ -34,6 +34,7 @@
       <div style="display:flex;flex-direction:column;gap:6px;">
         <span style="font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-weak);">Вариант индикатора</span>
         <div style="display:inline-flex;background:#0e0e10;border:1px solid var(--dark-gray-3);border-radius:8px;padding:3px;gap:2px;">
+          <button onClick="{{ h.styleI }}" style="{{ segI }}">★ Идеальный</button>
           <button onClick="{{ h.styleA }}" style="{{ segA }}">A · Чип</button>
           <button onClick="{{ h.styleD }}" style="{{ segD }}">D · Чип + кнопка</button>
           <button onClick="{{ h.styleE }}" style="{{ segE }}">E · Линия</button>
@@ -205,7 +206,7 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = {
-    style: 'A',
+    style: 'I',
     saveState: 'idle',
     remaining: 0,
     deadline: 0,
@@ -216,7 +217,16 @@ class Component extends DCLogic {
     changed: {},
   };
 
-  componentDidMount(){ this._snap=null; this._tick = setInterval(()=>this.tick(), 33); }
+  componentDidMount(){ this._snap=null; this._tick = setInterval(()=>this.tick(), 33); this._origTitle = document.title; }
+
+  componentDidUpdate(){
+    if (this.state.style!=='I'){ if (document.title!==this._origTitle) document.title=this._origTitle; return; }
+    const st = this.state.saveState;
+    let t = this._origTitle;
+    if (st==='queued' || st==='saving') t = '● Сохранение… — ' + this._origTitle;
+    if (st==='error') t = '⚠ Не сохранено — ' + this._origTitle;
+    if (document.title!==t) document.title=t;
+  }
   componentWillUnmount(){ clearInterval(this._tick); clearTimeout(this._saveT); clearTimeout(this._doneT); clearTimeout(this._idleT); }
 
   tick(){
@@ -343,13 +353,13 @@ class Component extends DCLogic {
     if (isSaved){ rsText = 'Сохранено'; rsColor = '#34d399'; }
     if (isError){ rsText = 'Не сохранено'; rsColor = '#ff8ba3'; }
 
-    // chip idle (G)
-    const chipIdle = style==='G' && isIdle;
+    // chip idle (G / Идеальный)
+    const chipIdle = (style==='G' || style==='I') && isIdle;
     if (chipIdle){ chipBg='rgba(255,255,255,.05)'; chipColor='var(--text-weak)'; }
 
     return {
-      segD: seg(style==='D'), segE: seg(style==='E'), segG: seg(style==='G'), segH: seg(style==='H'),
-      dActions: style==='D' && isQueued,
+      segD: seg(style==='D'), segE: seg(style==='E'), segG: seg(style==='G'), segH: seg(style==='H'), segI: seg(style==='I'),
+      dActions: (style==='D' || style==='I') && isQueued,
       lineOpacity: lineShow ? 1 : 0, lineBg, lineW, lineAnim,
       rsShow, rsText, rsColor, rsError: rsShow && isError,
       cardBorder, cardGlow, chipIdle,
@@ -373,12 +383,12 @@ class Component extends DCLogic {
       countSec, ringCirc, ringOffset, barPct, pending:this.state.pending,
 
       // chip A/D/G
-      chipShow: ((style==='A' || style==='D') && active) || style==='G', chipBg, chipColor,
+      chipShow: ((style==='A' || style==='D') && active) || style==='G' || style==='I', chipBg, chipColor,
 
       // handlers
       h: {
         styleA: ()=>this.setState({style:'A'}), styleD: ()=>this.setState({style:'D'}), styleE: ()=>this.setState({style:'E'}),
-        styleG: ()=>this.setState({style:'G'}), styleH: ()=>this.setState({style:'H'}),
+        styleG: ()=>this.setState({style:'G'}), styleH: ()=>this.setState({style:'H'}), styleI: ()=>this.setState({style:'I'}),
         setDebounce: (e)=>this.setState({debounceMs: parseInt(e.target.value,10)*1000}),
         toggleErrorMode: ()=>this.setState({errorMode:!this.state.errorMode}),
         showQueued: ()=>this.force('queued'), showSaving: ()=>this.force('saving'), showSaved: ()=>this.force('saved'), showError: ()=>this.force('error'),
