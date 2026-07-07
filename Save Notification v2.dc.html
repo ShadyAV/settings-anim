@@ -144,10 +144,10 @@
         </sc-if>
         <!-- H4: composed compact status actions -->
         <sc-if value="{{ h4Actions }}" hint-placeholder-val="{{ false }}">
-          <span style="height:28px;display:inline-flex;align-items:center;gap:0;margin-left:-10px;padding:0 8px 0 12px;background:rgba(255,255,255,.035);border:1px solid rgba(240,188,116,.18);border-left-color:rgba(240,188,116,.12);border-radius:6px 9999px 9999px 6px;box-shadow:inset 1px 0 0 rgba(255,255,255,.04);font-size:12px;font-weight:600;white-space:nowrap;">
-            <button onClick="{{ h.cancel }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-ghost" style="height:22px;background:transparent;border:none;color:var(--cell-white);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:0 7px;border-radius:9999px;transition:background .15s,color .15s;">Отменить</button>
-            <span style="width:1px;height:14px;background:rgba(187,186,192,.18);"></span>
-            <button onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-ghost" style="height:22px;background:transparent;border:none;color:var(--secondary);font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:0 7px;border-radius:9999px;transition:background .15s,color .15s;">Сохранить</button>
+          <span style="height:26px;display:inline-flex;align-items:center;gap:0;margin-left:-12px;padding:0 6px;background:rgba(240,188,116,.055);border:1px solid rgba(240,188,116,.24);border-left-color:rgba(240,188,116,.16);border-radius:0 9999px 9999px 0;box-sizing:border-box;font-size:12px;font-weight:600;white-space:nowrap;">
+            <button onClick="{{ h.cancel }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-ghost" style="height:20px;display:inline-flex;align-items:center;background:transparent;border:none;color:var(--cell-white);font:inherit;font-size:12px;font-weight:600;line-height:20px;cursor:pointer;padding:0 7px;border-radius:9999px;transition:background .15s,color .15s;">Отменить</button>
+            <span style="width:1px;height:12px;background:rgba(187,186,192,.2);"></span>
+            <button onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-ghost" style="height:20px;display:inline-flex;align-items:center;background:transparent;border:none;color:var(--secondary);font:inherit;font-size:12px;font-weight:700;line-height:20px;cursor:pointer;padding:0 7px;border-radius:9999px;transition:background .15s,color .15s;">Сохранить</button>
           </span>
         </sc-if>
         <!-- H: right-side status text -->
@@ -425,9 +425,10 @@ class Component extends DCLogic {
     }
     if (style==='H4') {
       const h4Bg = isQueued ? 'rgba(240,188,116,.11)' : 'transparent';
-      const h4Border = isQueued ? 'rgba(240,188,116,.28)' : 'transparent';
-      const h4Radius = isQueued ? '9999px 6px 6px 9999px' : '9999px';
-      chipStyle = `height:28px;display:inline-flex;align-items:center;gap:7px;padding:0 12px 0 8px;border-radius:${h4Radius};font-size:12px;font-weight:600;white-space:nowrap;transition:background .25s,color .25s,border-color .25s,border-radius .25s;user-select:none;background:${h4Bg};border:1px solid ${h4Border};color:${chipColor};`;
+      const h4Border = isQueued ? 'rgba(240,188,116,.24)' : 'transparent';
+      const h4Radius = isQueued ? '9999px 0 0 9999px' : '9999px';
+      const h4BorderRight = isQueued ? 'border-right:0;' : '';
+      chipStyle = `height:26px;display:inline-flex;align-items:center;gap:6px;padding:0 10px 0 8px;border-radius:${h4Radius};box-sizing:border-box;font-size:12px;font-weight:600;white-space:nowrap;transition:background .25s,color .25s,border-color .25s,border-radius .25s;user-select:none;background:${h4Bg};border:1px solid ${h4Border};${h4BorderRight}color:${chipColor};`;
     }
 
     // card border (H family)
