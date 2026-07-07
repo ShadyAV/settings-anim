@@ -41,7 +41,7 @@
           <button onClick="{{ h.styleH1 }}" style="{{ segH1 }}">H1 · Клик по чипу</button>
           <button onClick="{{ h.styleH2 }}" style="{{ segH2 }}">H2 · Явная отмена</button>
           <button onClick="{{ h.styleH3 }}" style="{{ segH3 }}">H3 · Текст вместо чипа</button>
-          <button onClick="{{ h.styleH4 }}" style="{{ segH4 }}">H4 · Компактно</button>
+          <button onClick="{{ h.styleH4 }}" style="{{ segH4 }}">H4 · Лаконично</button>
           <button onClick="{{ h.styleH }}" style="{{ segH }}">H · Без отмены</button>
         </div>
       </div>
@@ -142,16 +142,12 @@
           <button onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" style="background:transparent;border:1px solid var(--reddish-orange);color:var(--grayish-white);font:inherit;font-size:13px;font-weight:600;padding:5px 13px;border-radius:9999px;cursor:pointer;white-space:nowrap;transition:background .15s;" class="ec-hbtn-save">Сохранить сейчас</button>
           </span>
         </sc-if>
-
-        <!-- H4: compact explicit actions -->
+        <!-- H4: laconic explicit actions -->
         <sc-if value="{{ h4Actions }}" hint-placeholder-val="{{ false }}">
-          <span style="display:inline-flex;align-items:center;gap:4px;">
-            <button title="Отменить изменения" onClick="{{ h.cancel }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-cancel" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:rgba(255,255,255,.025);border:1px solid rgba(187,186,192,.28);color:var(--cell-white);border-radius:50%;cursor:pointer;padding:0;transition:background .15s,border-color .15s,color .15s;">
-              <svg width="10" height="10" viewBox="0 0 12 12"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            </button>
-            <button title="Сохранить сейчас" onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-save" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:rgba(240,188,116,.06);border:1px solid rgba(240,188,116,.45);color:var(--secondary);border-radius:50%;cursor:pointer;padding:0;transition:background .15s,border-color .15s,color .15s;">
-              <svg width="11" height="11" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
+          <span style="display:inline-flex;align-items:center;gap:8px;margin-left:2px;font-size:12px;font-weight:600;white-space:nowrap;">
+            <button onClick="{{ h.cancel }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hlink" style="background:none;border:none;color:var(--cell-white);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:0;border-bottom:1px dashed rgba(187,186,192,.45);transition:border-color .15s,color .15s;">Отменить</button>
+            <span style="width:1px;height:12px;background:rgba(187,186,192,.22);"></span>
+            <button onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hlink" style="background:none;border:none;color:var(--secondary);font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:0;border-bottom:1px dashed rgba(240,188,116,.42);transition:border-color .15s,color .15s;">Сохранить</button>
           </span>
         </sc-if>
         <!-- H: right-side status text -->
