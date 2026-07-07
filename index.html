@@ -41,7 +41,7 @@
           <button onClick="{{ h.styleH1 }}" style="{{ segH1 }}">H1 · Клик по чипу</button>
           <button onClick="{{ h.styleH2 }}" style="{{ segH2 }}">H2 · Явная отмена</button>
           <button onClick="{{ h.styleH3 }}" style="{{ segH3 }}">H3 · Текст вместо чипа</button>
-          <button onClick="{{ h.styleH4 }}" style="{{ segH4 }}">H4 · Лаконично</button>
+          <button onClick="{{ h.styleH4 }}" style="{{ segH4 }}">H4 · Компактный контрол</button>
           <button onClick="{{ h.styleH }}" style="{{ segH }}">H · Без отмены</button>
         </div>
       </div>
@@ -142,12 +142,12 @@
           <button onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" style="background:transparent;border:1px solid var(--reddish-orange);color:var(--grayish-white);font:inherit;font-size:13px;font-weight:600;padding:5px 13px;border-radius:9999px;cursor:pointer;white-space:nowrap;transition:background .15s;" class="ec-hbtn-save">Сохранить сейчас</button>
           </span>
         </sc-if>
-        <!-- H4: laconic explicit actions -->
+        <!-- H4: composed compact status actions -->
         <sc-if value="{{ h4Actions }}" hint-placeholder-val="{{ false }}">
-          <span style="display:inline-flex;align-items:center;gap:8px;margin-left:2px;font-size:12px;font-weight:600;white-space:nowrap;">
-            <button onClick="{{ h.cancel }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hlink" style="background:none;border:none;color:var(--cell-white);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:0;border-bottom:1px dashed rgba(187,186,192,.45);transition:border-color .15s,color .15s;">Отменить</button>
-            <span style="width:1px;height:12px;background:rgba(187,186,192,.22);"></span>
-            <button onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hlink" style="background:none;border:none;color:var(--secondary);font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:0;border-bottom:1px dashed rgba(240,188,116,.42);transition:border-color .15s,color .15s;">Сохранить</button>
+          <span style="height:28px;display:inline-flex;align-items:center;gap:0;margin-left:-10px;padding:0 8px 0 12px;background:rgba(255,255,255,.035);border:1px solid rgba(240,188,116,.18);border-left-color:rgba(240,188,116,.12);border-radius:6px 9999px 9999px 6px;box-shadow:inset 1px 0 0 rgba(255,255,255,.04);font-size:12px;font-weight:600;white-space:nowrap;">
+            <button onClick="{{ h.cancel }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-ghost" style="height:22px;background:transparent;border:none;color:var(--cell-white);font:inherit;font-size:12px;font-weight:600;cursor:pointer;padding:0 7px;border-radius:9999px;transition:background .15s,color .15s;">Отменить</button>
+            <span style="width:1px;height:14px;background:rgba(187,186,192,.18);"></span>
+            <button onClick="{{ h.saveNow }}" onMouseEnter="{{ h.chipEnter }}" onMouseLeave="{{ h.chipLeave }}" class="ec-hbtn-ghost" style="height:22px;background:transparent;border:none;color:var(--secondary);font:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:0 7px;border-radius:9999px;transition:background .15s,color .15s;">Сохранить</button>
           </span>
         </sc-if>
         <!-- H: right-side status text -->
@@ -247,8 +247,8 @@
         <div style="font-size:13px;line-height:19px;color:var(--cell-white);">Наведение на чип замораживает отсчёт, тултип подсказывает про отмену, клик открывает подтверждение. Компактно, но действие скрыто за наведением — новый пользователь может его не найти, а подтверждение добавляет второй клик</div>
       </div>
       <div style="flex:1 1 320px;background:var(--very-dark-gray);border:1px solid var(--dark-gray-3);border-radius:8px;padding:14px 16px;">
-        <div style="font-size:14px;font-weight:700;color:var(--grayish-white);margin-bottom:6px;">H2 · Явная отмена (рекомендую)</div>
-        <div style="font-size:13px;line-height:19px;color:var(--cell-white);">Пока идёт отсчёт, рядом с чипом видны «Отменить» и «Сохранить сейчас» — наведение на них тоже ставит паузу. Отмена срабатывает сразу, без предупреждения: ошибочная отмена обратима кнопкой «Вернуть». Один клик вместо двух, ничего не спрятано</div>
+        <div style="font-size:14px;font-weight:700;color:var(--grayish-white);margin-bottom:6px;">H4 · Компактный контрол (рекомендую)</div>
+        <div style="font-size:13px;line-height:19px;color:var(--cell-white);">Берёт механику H2, но собирает статус и действия в один компактный контрол: таймер слева, «Отменить» и «Сохранить» справа. Действия видны сразу, но не спорят с заголовком и не превращают шапку настроек в панель кнопок</div>
       </div>
     </div>
 
@@ -424,9 +424,10 @@ class Component extends DCLogic {
       chipStyle = `display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap;transition:color .25s;user-select:none;background:transparent;border:none;padding:5px 0;color:${chipColor};`;
     }
     if (style==='H4') {
-      const h4Bg = isQueued ? 'rgba(240,188,116,.1)' : 'transparent';
-      const h4Border = isQueued ? 'rgba(240,188,116,.22)' : 'transparent';
-      chipStyle = `display:inline-flex;align-items:center;gap:7px;padding:4px 9px 4px 7px;border-radius:9999px;font-size:12px;font-weight:600;white-space:nowrap;transition:background .25s,color .25s,border-color .25s;user-select:none;background:${h4Bg};border:1px solid ${h4Border};color:${chipColor};`;
+      const h4Bg = isQueued ? 'rgba(240,188,116,.11)' : 'transparent';
+      const h4Border = isQueued ? 'rgba(240,188,116,.28)' : 'transparent';
+      const h4Radius = isQueued ? '9999px 6px 6px 9999px' : '9999px';
+      chipStyle = `height:28px;display:inline-flex;align-items:center;gap:7px;padding:0 12px 0 8px;border-radius:${h4Radius};font-size:12px;font-weight:600;white-space:nowrap;transition:background .25s,color .25s,border-color .25s,border-radius .25s;user-select:none;background:${h4Bg};border:1px solid ${h4Border};color:${chipColor};`;
     }
 
     // card border (H family)
